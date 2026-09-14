@@ -1,4 +1,4 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Text;
 using Shared.Udp;
@@ -33,7 +33,7 @@ internal unsafe struct MatrixPacketPoke
     private readonly ushort _protocolVersion;
 
     public readonly ushort UnkVersion =>
-        BinaryPrimitives.ReverseEndianness(_protocolVersion);
+        BinaryPrimitives.ReverseEndianness(_unkVersion);
 
     public readonly ushort ProtocolVersion =>
         BinaryPrimitives.ReverseEndianness(_protocolVersion);

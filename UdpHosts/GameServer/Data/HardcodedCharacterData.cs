@@ -4,6 +4,7 @@ using System.Linq;
 using AeroMessages.GSS.Character.Event;
 using GameServer.StaticDB;
 using GameServer.StaticDB.Records.dbcharacter;
+using Shared.Common.Characters;
 
 namespace GameServer.Data;
 
@@ -12,9 +13,13 @@ public static class HardcodedCharacterData
     public static string ArmyTag = "ARMY";
     public static ulong ArmyGUID = 1u;
     public static int SelectedLoadout = 184538131;
-    public static byte Level = 45;
-    public static byte EffectiveLevel = 45;
-    public static int MaxHealth = 19192;
+
+    // First-hour / created-character defaults (retail new chars are L1, not endgame).
+    public static byte Level = 1;
+    public static byte EffectiveLevel = 1;
+
+    // Starter vitals until gear-derived MaxHealth is wired; endgame 19192 was wrong for Copa.
+    public static int MaxHealth = 2500;
     public static int GeneratedLoadoutCounter = 20001;
     public static HashSet<uint> HostileFactionIds = [2, 3, 5, 6, 7, 8, 17, 22, 42, 43, 45, 46, 47, 48];
 
@@ -22,7 +27,7 @@ public static class HardcodedCharacterData
     {
         CharacterInfo = new BasicCharacterInfo()
         {
-            Name = "Fallback",
+            Name = "Freelancer",
             Gender = (uint)CharacterGender.Male,
             Race = (uint)CharacterRace.Human,
             TitleId = 135,
@@ -838,6 +843,44 @@ public static class HardcodedCharacterData
         (143124, 2),
         (143677, 60),
     ];
+
+    public static BasicCharacterData FromCreated(CreatedCharacterRecord record)
+    {
+        CharCreateColors.Resolve(record);
+        var accessories = record.HeadAccessoryB != 0
+                              ? new uint[] { (uint)record.HeadAccessoryA, (uint)record.HeadAccessoryB }
+                              : new uint[] { (uint)record.HeadAccessoryA };
+
+        return new BasicCharacterData
+               {
+                   CharacterInfo = new BasicCharacterInfo()
+                                   {
+                                       Name = record.Name,
+                                       Gender = (uint)record.GenderByte,
+                                       Race = (uint)CharacterRace.Human,
+                                       TitleId = 0,
+                                       CurrentBattleframeSDBId = (uint)record.StartClassId,
+                                       ArmyTag = string.Empty,
+                                       ArmyGuid = 0,
+                                       ArmyIsOfficer = false,
+                                   },
+                   CharacterVisuals = new BasicCharacterVisuals()
+                                      {
+                                          Head = (uint)record.Head,
+                                          Eyes = 10001,
+                                          VoiceSet = (uint)record.VoiceSet,
+                                          Vehicle = 0,
+                                          Glider = 0,
+                                          HeadAccessories = accessories,
+                                          Ornaments = [],
+                                          SkinColor = record.SkinColor,
+                                          EyeColor = record.EyeColor,
+                                          LipColor = record.LipColor,
+                                          HairColor = record.HairColor,
+                                          FacialHairColor = record.HairColor,
+                                      }
+               };
+    }
 
     public static void GenerateCharCreateLoadoutAndItems(CharacterInventory inventory, uint charCreateLoadoutId, uint chassisId)
     {

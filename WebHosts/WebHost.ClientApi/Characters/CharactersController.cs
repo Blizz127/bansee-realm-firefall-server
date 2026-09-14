@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Common.Characters;
 using WebHost.ClientApi.Characters.Models;
 
 namespace WebHost.ClientApi.Characters;
@@ -163,12 +165,23 @@ public class CharactersController : ControllerBase
     [Produces("application/json")]
     public object ValidateCharacterName([FromBody] CharacterName characterName)
     {
-        if (string.IsNullOrEmpty(characterName.Name) || characterName.Name.Length < 4)
+        var name = characterName?.Name?.Trim() ?? string.Empty;
+        if (name.Length < 4)
         {
-            return new { valid = false };
+            return new { valid = false, name, reason = new[] { "ERR_NAME_TOO_SHORT" } };
         }
-        
-        return new { valid = true };
+
+        if (name.Length > 20)
+        {
+            return new { valid = false, name, reason = new[] { "ERR_NAME_TOO_LONG" } };
+        }
+
+        if (!CreatedCharacterStore.IsNameAvailable(name))
+        {
+            return new { valid = false, name, reason = new[] { "ERR_NAME_IN_USE" } };
+        }
+
+        return new { valid = true, name };
     }
 
     [Route("api/v1/characters")]
@@ -176,6 +189,82 @@ public class CharactersController : ControllerBase
     [Produces("application/json")]
     public object CreateCharacter([FromBody] CharacterCreate characterCreateData)
     {
-        return new { };
+        try
+        {
+            var name = characterCreateData?.Name?.Trim() ?? string.Empty;
+            if (name.Length < 4)
+            {
+                return BadRequest(new { message = "Name too short", data = new { code = "ERR_NAME_TOO_SHORT", err_data = new { errors = new[] { "ERR_NAME_TOO_SHORT" } } } });
+            }
+
+            if (name.Length > 20)
+            {
+                return BadRequest(new { message = "Name too long", data = new { code = "ERR_NAME_TOO_LONG", err_data = new { errors = new[] { "ERR_NAME_TOO_LONG" } } } });
+            }
+
+            characterCreateData.Name = name;
+            var created = _charactersRepository.CreateCharacter(characterCreateData);
+            var list = _charactersRepository.GetCharacters();
+            foreach (var character in list.Characters)
+            {
+                if (character.CharacterGuid == created.CharacterGuid)
+                {
+                    return character;
+                }
+            }
+
+            return new { };
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "ERR_NAME_IN_USE")
+        {
+            return BadRequest(new { message = "Name in use", data = new { code = "ERR_NAME_IN_USE", err_data = new { errors = new[] { "ERR_NAME_IN_USE" } } } });
+        }
+    }
+
+    [Route("api/v1/characters/{characterId}/delete")]
+    [HttpPost]
+    [Produces("application/json")]
+    public object DeleteCharacter(string characterId)
+    {
+        if (!ulong.TryParse(characterId, out var guid))
+        {
+            return NotFound(new { message = "Character not found", data = new { code = "ERR_CHAR_NOT_FOUND" } });
+        }
+
+        try
+        {
+            _charactersRepository.SoftDelete(guid);
+            return new { };
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "ERR_CHAR_NOT_FOUND")
+        {
+            return NotFound(new { message = "Character not found", data = new { code = "ERR_CHAR_NOT_FOUND" } });
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "ERR_CHAR_DELETED")
+        {
+            // Idempotent: already soft-deleted is success for the client.
+            return new { };
+        }
+    }
+
+    [Route("api/v2/characters/{characterId}/undelete")]
+    [HttpPost]
+    [Produces("application/json")]
+    public object UndeleteCharacter(string characterId)
+    {
+        if (!ulong.TryParse(characterId, out var guid))
+        {
+            return NotFound(new { message = "Character not found", data = new { code = "ERR_CHAR_NOT_FOUND" } });
+        }
+
+        try
+        {
+            _charactersRepository.Undelete(guid);
+            return new { };
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "ERR_CHAR_NOT_FOUND")
+        {
+            return NotFound(new { message = "Character not found", data = new { code = "ERR_CHAR_NOT_FOUND" } });
+        }
     }
 }

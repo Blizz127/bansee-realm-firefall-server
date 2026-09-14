@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -11,7 +11,9 @@ namespace Shared.Udp;
 
 public abstract class PacketServer : IPacketSender
 {
-    public const int MTU = 1400;
+    // Keep under Tailscale/VPN path MTU (~1280): UDP payload + IP(20) + UDP(8) must fit.
+    // NetworkClient/Channel still reserve ~80 bytes of protocol headroom from this value.
+    public const int MTU = 1200;
 
     protected readonly ILogger Logger;
 
@@ -183,6 +185,10 @@ public abstract class PacketServer : IPacketSender
 
         Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+        // Linux UDP SendTo returns EMSGSIZE (90) for datagrams over ~65507 bytes, or when
+        // DF is set and the packet exceeds path MTU. Never let one bad send kill the process.
+        const int maxUdpPayload = 65507;
+
         while (true)
         {
             if (ct.IsCancellationRequested)
@@ -195,12 +201,57 @@ public abstract class PacketServer : IPacketSender
                 Packet? packet;
                 while ((packet = await OutgoingPackets.ReceiveAsync(ct)) != null)
                 {
-                    _ = ServerSocket.SendTo(packet.Value.PacketData.ToArray(), packet.Value.PacketData.Length, SocketFlags.None, packet.Value.RemoteEndpoint);
+                    var data = packet.Value.PacketData;
+                    var len = data.Length;
+                    if (len <= 0)
+                    {
+                        continue;
+                    }
+
+                    if (len > maxUdpPayload)
+                    {
+                        Logger.Error(
+                            "Dropping oversized UDP datagram ({Length} bytes) to {Remote} (max {Max})",
+                            len,
+                            packet.Value.RemoteEndpoint,
+                            maxUdpPayload);
+                        continue;
+                    }
+
+                    if (len > MTU)
+                    {
+                        Logger.Warning(
+                            "Sending UDP datagram larger than MTU ({Length} > {Mtu}) to {Remote}",
+                            len,
+                            MTU,
+                            packet.Value.RemoteEndpoint);
+                    }
+
+                    try
+                    {
+                        _ = ServerSocket.SendTo(data.ToArray(), len, SocketFlags.None, packet.Value.RemoteEndpoint);
+                    }
+                    catch (SocketException ex)
+                    {
+                        Logger.Error(
+                            ex,
+                            "UDP SendTo failed ({ErrorCode}) size={Length} to {Remote}",
+                            ex.SocketErrorCode,
+                            len,
+                            packet.Value.RemoteEndpoint);
+                    }
                 }
             }
             catch (OperationCanceledException)
             {
                 break;
+            }
+            catch (Exception ex)
+            {
+                if (!ct.IsCancellationRequested)
+                {
+                    Logger.Error(ex, "Error in sendThread");
+                }
             }
 
             _ = Thread.Yield();

@@ -664,7 +664,7 @@ public sealed partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarge
                 Log.Warning("Wtf battleframe {battleframe} has random scale: min: {min}, max: {max}", battleframeRecord.Id, battleframeRecord.MinRandScale, battleframeRecord.MaxRandScale);
             }
 
-            Collision = new CharacterCollisionComponent
+            var collision = new CharacterCollisionComponent
             {
                 RequiresRagdoll = charInfo.RequiresRagdoll == 1,
                 PoseTypeRecord = poseTypeRecord,
@@ -672,6 +672,8 @@ public sealed partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarge
                 HitboxCollisionId = battleframeVisualRecord.HitboxCollisionId,
                 Scale = battleframeRecord.MinRandScale,
             };
+            Collision = collision;
+            base.Collision = collision;
         }
     }
 
@@ -1852,7 +1854,7 @@ public sealed partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarge
         CharacterState = new CharacterStateData { State = CharacterStateData.CharacterStatus.Living, Time = Shard.CurrentTime };
         HostilityInfo = new HostilityInfoData { Flags = 0 | HostilityInfoData.HostilityFlags.Faction, FactionId = 1 };
         SetMaxShields(0, true);
-        SetMaxHealth(19192, true);
+        SetMaxHealth(HardcodedCharacterData.MaxHealth, true);
         GibVisualsInfo = new GibVisuals { Id = 0, Time = Shard.CurrentTime };
         ProcessDelay = new ProcessDelayData { Unk1 = 30721, Unk2 = 236 };
         Emote = new EmoteData { Id = 0, Time = 0 };
@@ -2038,7 +2040,7 @@ public sealed partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarge
             PvPRankPointsProp = 0,
             PvPTokensProp = 0,
             BountyPointsLastClaimedProp = 0,
-            EliteLevelProp = 1
+            EliteLevelProp = 0
         };
 
         Character_CombatController = new CombatController

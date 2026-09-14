@@ -1,0 +1,830 @@
+[
+  {
+    "id": 1,
+    "zone_id": 448,
+    "type": 294,
+    "comment": "2016 eid \u2014 Watchtower: Lagoa Rasa south deck",
+    "orientation": {
+      "W": 0.70710677,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.70710677
+    },
+    "position": {
+      "X": 187.59,
+      "Y": 234.51,
+      "Z": 483.98
+    },
+    "display_name": "Watchtower Guard"
+  },
+  {
+    "id": 2,
+    "zone_id": 448,
+    "type": 297,
+    "comment": "2016 eid \u2014 Watchtower: Lagoa Rasa south deck",
+    "orientation": {
+      "W": 0,
+      "X": 0,
+      "Y": 0,
+      "Z": 1
+    },
+    "position": {
+      "X": 189.88,
+      "Y": 238.92,
+      "Z": 483.98
+    },
+    "display_name": "Watchtower Guard"
+  },
+  {
+    "id": 3,
+    "zone_id": 448,
+    "type": 290,
+    "comment": "2016 eid \u2014 Watchtower: Lagoa Rasa south deck",
+    "orientation": {
+      "W": 0.9238795,
+      "X": 0,
+      "Y": 0,
+      "Z": 0.3826834
+    },
+    "position": {
+      "X": 186.05,
+      "Y": 237.81,
+      "Z": 483.6
+    },
+    "display_name": "Watchtower Guard"
+  },
+  {
+    "id": 4,
+    "zone_id": 448,
+    "type": 2477,
+    "comment": "2016 eid \u2014 Watchtower: Lagoa Rasa upper deck",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": 175.51,
+      "Y": 243.45,
+      "Z": 504.82
+    },
+    "display_name": "Accord Soldier"
+  },
+  {
+    "id": 5,
+    "zone_id": 448,
+    "type": 2477,
+    "comment": "2016 eid \u2014 Watchtower: Lagoa Rasa upper deck",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": 178.73,
+      "Y": 244.07,
+      "Z": 506.17
+    },
+    "display_name": "Accord Soldier"
+  },
+  {
+    "id": 6,
+    "zone_id": 448,
+    "type": 956,
+    "comment": "Supply Officer Cross \u2014 wiki Vendors (-369,-455); 2015 eid-linked capture",
+    "orientation": {
+      "W": -0.117409,
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.993084
+    },
+    "position": {
+      "X": -367.74,
+      "Y": -452.59,
+      "Z": 428.36
+    },
+    "display_name": "Supply Officer Cross"
+  },
+  {
+    "id": 7,
+    "zone_id": 448,
+    "type": 1643,
+    "comment": "ARES Soldier \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -560.64,
+      "Y": -476.1,
+      "Z": 409.88
+    },
+    "display_name": "ARES Soldier"
+  },
+  {
+    "id": 8,
+    "zone_id": 448,
+    "type": 2211,
+    "comment": "Accord Guard \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -592.88,
+      "Y": -417.32,
+      "Z": 405.91
+    },
+    "display_name": "Accord Guard"
+  },
+  {
+    "id": 9,
+    "zone_id": 448,
+    "type": 1397,
+    "comment": "Accord Medical Officer \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.70710677,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.70710677
+    },
+    "position": {
+      "X": -544.65,
+      "Y": -483.77,
+      "Z": 469.43
+    },
+    "display_name": "Accord Medical Officer"
+  },
+  {
+    "id": 10,
+    "zone_id": 448,
+    "type": 1332,
+    "comment": "Accord Quartermaster \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -454.34,
+      "Y": -450.47,
+      "Z": 449.18
+    },
+    "display_name": "Accord Quartermaster"
+  },
+  {
+    "id": 11,
+    "zone_id": 448,
+    "type": 835,
+    "comment": "Alex Sundal \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.9238795,
+      "X": 0,
+      "Y": 0,
+      "Z": 0.3826834
+    },
+    "position": {
+      "X": -443.35,
+      "Y": -412.21,
+      "Z": 444.81
+    },
+    "display_name": "Alex Sundal"
+  },
+  {
+    "id": 12,
+    "zone_id": 448,
+    "type": 978,
+    "comment": "Arcfold Security \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -396.81,
+      "Y": -443.51,
+      "Z": 434.69
+    },
+    "display_name": "Arcfold Security"
+  },
+  {
+    "id": 13,
+    "zone_id": 448,
+    "type": 827,
+    "comment": "Biff Meister \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.70710677,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.70710677
+    },
+    "position": {
+      "X": -446.86,
+      "Y": -451.38,
+      "Z": 449.74
+    },
+    "display_name": "Biff Meister"
+  },
+  {
+    "id": 14,
+    "zone_id": 448,
+    "type": 1429,
+    "comment": "Crank \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -382.5,
+      "Y": -418.78,
+      "Z": 428.34
+    },
+    "display_name": "Crank"
+  },
+  {
+    "id": 15,
+    "zone_id": 448,
+    "type": 828,
+    "comment": "Crotchety Earl \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -465.9,
+      "Y": -401.89,
+      "Z": 444.81
+    },
+    "display_name": "Crotchety Earl"
+  },
+  {
+    "id": 16,
+    "zone_id": 448,
+    "type": 1368,
+    "comment": "Doctor Abrams \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -367.17,
+      "Y": -383.05,
+      "Z": 424.86
+    },
+    "display_name": "Doctor Abrams"
+  },
+  {
+    "id": 17,
+    "zone_id": 448,
+    "type": 821,
+    "comment": "Fatima Belo \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -537.85,
+      "Y": -395.1,
+      "Z": 455.28
+    },
+    "display_name": "Fatima Belo"
+  },
+  {
+    "id": 18,
+    "zone_id": 448,
+    "type": 822,
+    "comment": "Indra Rodrigues \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.3826834,
+      "X": 0,
+      "Y": 0,
+      "Z": 0.9238795
+    },
+    "position": {
+      "X": -442.94,
+      "Y": -414.46,
+      "Z": 444.84
+    },
+    "display_name": "Indra Rodrigues"
+  },
+  {
+    "id": 19,
+    "zone_id": 448,
+    "type": 833,
+    "comment": "Joana Medeiros \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.70710677,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.70710677
+    },
+    "position": {
+      "X": -453.69,
+      "Y": -449.0,
+      "Z": 449.18
+    },
+    "display_name": "Joana Medeiros"
+  },
+  {
+    "id": 20,
+    "zone_id": 448,
+    "type": 832,
+    "comment": "Jose Vargas \u2014 2015 unique eid share=2",
+    "orientation": {
+      "W": -0.731029,
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.682346
+    },
+    "position": {
+      "X": -431.62,
+      "Y": -467.82,
+      "Z": 449.75
+    },
+    "display_name": "Jose Vargas"
+  },
+  {
+    "id": 21,
+    "zone_id": 448,
+    "type": 1055,
+    "comment": "Landing Pad Engineer \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": -0.442604,
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.896717
+    },
+    "position": {
+      "X": -454.83,
+      "Y": -414.5,
+      "Z": 445.4
+    },
+    "display_name": "Landing Pad Engineer"
+  },
+  {
+    "id": 22,
+    "zone_id": 448,
+    "type": 907,
+    "comment": "Lieutenant Chelsea Maclean \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -582.5,
+      "Y": -422.1,
+      "Z": 405.92
+    },
+    "display_name": "Lieutenant Chelsea Maclean"
+  },
+  {
+    "id": 23,
+    "zone_id": 448,
+    "type": 1707,
+    "comment": "Lieutenant Hicks \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -407.56,
+      "Y": -440.91,
+      "Z": 433.94
+    },
+    "display_name": "Lieutenant Hicks"
+  },
+  {
+    "id": 24,
+    "zone_id": 448,
+    "type": 842,
+    "comment": "Lieutenant Jim Davies \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -423.93,
+      "Y": -391.83,
+      "Z": 449.41
+    },
+    "display_name": "Lieutenant Jim Davies"
+  },
+  {
+    "id": 25,
+    "zone_id": 448,
+    "type": 1712,
+    "comment": "Lieutenant Lee \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -431.91,
+      "Y": -464.79,
+      "Z": 449.71
+    },
+    "display_name": "Lieutenant Lee"
+  },
+  {
+    "id": 26,
+    "zone_id": 448,
+    "type": 570,
+    "comment": "Luau Larry \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.92874485,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.37071958
+    },
+    "position": {
+      "X": -452.05,
+      "Y": -417.26,
+      "Z": 445.4
+    },
+    "display_name": "Luau Larry"
+  },
+  {
+    "id": 27,
+    "zone_id": 448,
+    "type": 1728,
+    "comment": "Maddison Schmidt \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -544.15,
+      "Y": -426.84,
+      "Z": 455.26
+    },
+    "display_name": "Maddison Schmidt"
+  },
+  {
+    "id": 28,
+    "zone_id": 448,
+    "type": 849,
+    "comment": "Major Winston Pierce \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.92874485,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.37071958
+    },
+    "position": {
+      "X": -458.06,
+      "Y": -419.87,
+      "Z": 459.22
+    },
+    "display_name": "Major Winston Pierce"
+  },
+  {
+    "id": 29,
+    "zone_id": 448,
+    "type": 820,
+    "comment": "Manhattan \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -476.74,
+      "Y": -421.04,
+      "Z": 452.84
+    },
+    "display_name": "Manhattan"
+  },
+  {
+    "id": 30,
+    "zone_id": 448,
+    "type": 850,
+    "comment": "Norma Tilda \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -496.51,
+      "Y": -420.6,
+      "Z": 455.22
+    },
+    "display_name": "Norma Tilda"
+  },
+  {
+    "id": 31,
+    "zone_id": 448,
+    "type": 825,
+    "comment": "Ol' Felix Simoes \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -375.67,
+      "Y": -432.28,
+      "Z": 428.34
+    },
+    "display_name": "Ol' Felix Simoes"
+  },
+  {
+    "id": 32,
+    "zone_id": 448,
+    "type": 851,
+    "comment": "Private Donovan Davis \u2014 2015 unique eid share=2",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -381.5,
+      "Y": -449.27,
+      "Z": 428.36
+    },
+    "display_name": "Private Donovan Davis"
+  },
+  {
+    "id": 33,
+    "zone_id": 448,
+    "type": 855,
+    "comment": "Rafaela Silva \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": -0.247044,
+      "X": 0.0,
+      "Y": 0.009435,
+      "Z": -0.968958
+    },
+    "position": {
+      "X": -464.94,
+      "Y": -448.51,
+      "Z": 449.2
+    },
+    "display_name": "Rafaela Silva"
+  },
+  {
+    "id": 34,
+    "zone_id": 448,
+    "type": 502,
+    "comment": "Ratchet \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.70710677,
+      "X": 0,
+      "Y": 0,
+      "Z": 0.70710677
+    },
+    "position": {
+      "X": -573.29,
+      "Y": -469.14,
+      "Z": 416.43
+    },
+    "display_name": "Ratchet"
+  },
+  {
+    "id": 35,
+    "zone_id": 448,
+    "type": 823,
+    "comment": "Rosa Costa \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -593.81,
+      "Y": -430.92,
+      "Z": 405.92
+    },
+    "display_name": "Rosa Costa"
+  },
+  {
+    "id": 36,
+    "zone_id": 448,
+    "type": 845,
+    "comment": "Rubin Gallagher \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -581.14,
+      "Y": -415.67,
+      "Z": 411.96
+    },
+    "display_name": "Rubin Gallagher"
+  },
+  {
+    "id": 37,
+    "zone_id": 448,
+    "type": 847,
+    "comment": "Sapphire Gallagher \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -537.85,
+      "Y": -404.0,
+      "Z": 455.26
+    },
+    "display_name": "Sapphire Gallagher"
+  },
+  {
+    "id": 38,
+    "zone_id": 448,
+    "type": 961,
+    "comment": "Sergeant Choi \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.92874485,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.37071958
+    },
+    "position": {
+      "X": -442.7,
+      "Y": -437.57,
+      "Z": 444.8
+    },
+    "display_name": "Sergeant Choi"
+  },
+  {
+    "id": 39,
+    "zone_id": 448,
+    "type": 909,
+    "comment": "Sergeant Dominick Atkinson \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -597.48,
+      "Y": -414.93,
+      "Z": 405.91
+    },
+    "display_name": "Sergeant Dominick Atkinson"
+  },
+  {
+    "id": 40,
+    "zone_id": 448,
+    "type": 1711,
+    "comment": "Sergeant Nava \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -545.07,
+      "Y": -425.24,
+      "Z": 455.28
+    },
+    "display_name": "Sergeant Nava"
+  },
+  {
+    "id": 41,
+    "zone_id": 448,
+    "type": 836,
+    "comment": "Spicy Al \u2014 2015 unique eid share=1",
+    "orientation": {
+      "W": 0.92874485,
+      "X": 0,
+      "Y": 0,
+      "Z": -0.37071958
+    },
+    "position": {
+      "X": -399.52,
+      "Y": -443.51,
+      "Z": 435.94
+    },
+    "display_name": "Spicy Al"
+  },
+  {
+    "id": 42,
+    "zone_id": 448,
+    "type": 916,
+    "comment": "Vacationer \u2014 2015 unique eid share=2",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -377.41,
+      "Y": -450.39,
+      "Z": 428.36
+    },
+    "display_name": "Vacationer"
+  },
+  {
+    "id": 43,
+    "zone_id": 448,
+    "type": 505,
+    "comment": "Wargrim \u2014 2015 unique eid share=2",
+    "orientation": {
+      "W": -0.731029,
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.682346
+    },
+    "position": {
+      "X": -431.62,
+      "Y": -467.82,
+      "Z": 449.75
+    },
+    "display_name": "Wargrim"
+  },
+  {
+    "id": 44,
+    "zone_id": 448,
+    "type": 831,
+    "comment": "Teobalde Palmeiro \u2014 2016 eid-linked west Copa civic (2015 StaticInfo had no XYZ)",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -527.5,
+      "Y": -425.27,
+      "Z": 455.31
+    },
+    "display_name": "Teobalde Palmeiro"
+  },
+  {
+    "id": 45,
+    "zone_id": 448,
+    "type": 834,
+    "comment": "Corporal Dean Winter \u2014 wiki Other NPCs; 2015 eid non-junk XYZ (not Larry-cluster bleed)",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -403.61,
+      "Y": -439.8,
+      "Z": 433.97
+    },
+    "display_name": "Corporal Dean Winter"
+  },
+  {
+    "id": 46,
+    "zone_id": 448,
+    "type": 908,
+    "comment": "Corporal Shelby Gladwyn \u2014 2015 unique eid (non-junk Copa XYZ near SIN)",
+    "orientation": {
+      "W": 1,
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "position": {
+      "X": -354.45,
+      "Y": -410.82,
+      "Z": 422.74
+    },
+    "display_name": "Corporal Shelby Gladwyn"
+  }
+]

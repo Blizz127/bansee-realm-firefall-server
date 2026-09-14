@@ -13,6 +13,7 @@ using GameServer.StaticDB.Records.customdata;
 using GameServer.Test;
 using GrpcGameServerAPIClient;
 using Serilog;
+using Shared.Common.Characters;
 using CharacterEntity = GameServer.Entities.Character.CharacterEntity;
 
 namespace GameServer;
@@ -54,14 +55,13 @@ public class NetworkPlayer : NetworkClient, INetworkPlayer
         var guid = characterId & 0xffffffffffffff00;
         CharacterId = guid;
 
-        // Don't crash if they are already logged in
+        // Don't crash if they are already logged in — drop the stale entity so reconnect works
+        // (common after a client crash / Tailscale blip leaves the character zoned in).
         AssignedShard.Entities.TryGetValue(CharacterId, out var existing);
         if (existing != null)
         {
-            Logger.Warning("Closing login because entity with this id is already zoned in");
-            var resp = new AeroMessages.Control.CloseConnection { Unk = [0, 0, 0, 0] };
-            NetChannels[ChannelType.Control].SendMessage(resp);
-            return;
+            Logger.Warning("Character 0x{CharacterId:X16} already zoned in; removing stale entity for reconnect", CharacterId);
+            AssignedShard.EntityMan.Remove(CharacterId);
         }
 
         // Begin setting up player character
@@ -82,23 +82,56 @@ public class NetworkPlayer : NetworkClient, INetworkPlayer
         Inventory = new CharacterInventory(AssignedShard, this, CharacterEntity);
         Inventory.LoadHardcodedInventory();
 
-        // Use remote data or fallback to setup character
-        bool useRemoteData = true;
+        // Prefer GRPC, then file-backed create store for this GUID, then hardcoded fallback.
+        // Never fall back to GetLatest() — that can load another character's visuals.
         int loadoutId;
-        if (remoteData != null && useRemoteData)
+        if (remoteData != null)
         {
             CharacterEntity.LoadRemote(remoteData);
-
-            // Todo: load inventory from db so we can use those loadouts
             loadoutId = Inventory.GetLoadoutIdForChassis(remoteData.CharacterInfo.CurrentBattleframeSDBId);
         }
         else
         {
-            CharacterEntity.Load(HardcodedCharacterData.FallbackData);
-            loadoutId = Inventory.GetLoadoutIdForChassis(76331);
+            var created = CreatedCharacterStore.GetByGuid(characterId);
+            if (created != null && !created.IsDeleted)
+            {
+                var data = HardcodedCharacterData.FromCreated(created);
+                CharacterEntity.Load(data);
+                loadoutId = Inventory.GetLoadoutIdForChassis(data.CharacterInfo.CurrentBattleframeSDBId);
+                Logger.Information(
+                    "Loaded created character {Name} frame {Frame} level {Level} maxHealth {MaxHealth}",
+                    created.Name,
+                    created.StartClassId,
+                    HardcodedCharacterData.Level,
+                    HardcodedCharacterData.MaxHealth);
+            }
+            else
+            {
+                CharacterEntity.Load(HardcodedCharacterData.FallbackData);
+                loadoutId = Inventory.GetLoadoutIdForChassis(76331);
+                if (created is { IsDeleted: true })
+                {
+                    Logger.Warning("Character {CharacterId} is soft-deleted; using fallback loadout", characterId);
+                }
+            }
         }
 
         var loadoutRefData = Inventory.GetLoadoutReferenceData(loadoutId);
+        if (loadoutRefData == null)
+        {
+            Logger.Warning("No loadout for id {LoadoutId}; falling back to Mammoth chassis 76331", loadoutId);
+            loadoutId = Inventory.GetLoadoutIdForChassis(76331);
+            loadoutRefData = Inventory.GetLoadoutReferenceData(loadoutId);
+        }
+
+        if (loadoutRefData == null)
+        {
+            Logger.Error("Unable to resolve any chassis loadout for character {CharacterId}; aborting login", characterId);
+            var resp = new AeroMessages.Control.CloseConnection { Unk = [0, 0, 0, 0] };
+            NetChannels[ChannelType.Control].SendMessage(resp);
+            return;
+        }
+
         var loadout = new CharacterLoadout(loadoutRefData);
         AssignedShard.Admin.ApplyEquipmentOverrides(this, loadout);
         CharacterEntity.ApplyLoadout(loadout);
@@ -116,20 +149,24 @@ public class NetworkPlayer : NetworkClient, INetworkPlayer
         var wel = new WelcomeToTheMatrix { PlayerID = PlayerId, Unk1 = [], Unk2 = [] };
         NetChannels[ChannelType.Matrix].SendMessage(wel);
 
-        Zone zone;
-        uint zoneId;
+        // Single-shard PIN: always enter this GameServer's zone. Decoding the zone from the
+        // character GUID made Enter World hunt a per-character "realm" we do not host.
+        var zoneId = AssignedShard.ZoneId;
+        var zone = DataUtils.GetZone(zoneId);
         uint outpostId;
-
-        if (remoteData != null)
+        if (remoteData != null && remoteData.CharacterInfo.LastZoneId == zoneId)
         {
-            zoneId = AssignedShard.ZoneId;
-            zone = DataUtils.GetZone(zoneId);
-            outpostId = remoteData.CharacterInfo.LastZoneId == zoneId ? FindClosestAvailableOutpost(zone, remoteData.CharacterInfo.LastOutpostId) : 0;
+            outpostId = FindClosestAvailableOutpost(zone, remoteData.CharacterInfo.LastOutpostId);
         }
         else
         {
-            zoneId = (uint)(characterId & 0x000000000000ffff);
-            zone = DataUtils.GetZone(zoneId);
+            outpostId = zone.DefaultOutpostId;
+        }
+
+        // PIN previously defaulted New Eden to Watchtower: Lagoa Rasa (17). Retail first hub is Copacabana (23).
+        if (zoneId == 448 && outpostId == 17)
+        {
+            Logger.Information("Remapping Watchtower: Lagoa Rasa (17) to Copacabana outpost {OutpostId}", zone.DefaultOutpostId);
             outpostId = zone.DefaultOutpostId;
         }
 
@@ -323,6 +360,13 @@ public class NetworkPlayer : NetworkClient, INetworkPlayer
 
         CurrentZone = z;
         CurrentOutpostId = outpostId;
+        Logger.Information(
+            "EnterZone {ZoneId} Outpost {OutpostId} spawn ({X:F2},{Y:F2},{Z:F2})",
+            z.ID,
+            outpostId,
+            spawnPoint.Position.X,
+            spawnPoint.Position.Y,
+            spawnPoint.Position.Z);
 
         var msg = new EnterZone
         {

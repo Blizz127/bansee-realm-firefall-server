@@ -213,6 +213,14 @@ public partial class PhysicsEngine
         var mov = character.MovementStateContainer;
         var movestate = character.MovementStateContainer.Movestate;
         var info = character.Collision;
+        if (info?.PoseTypeRecord == null)
+        {
+            _logger.Warning(
+                "No PoseTypeRecord for character {EntityId} type {TypeId}; using fallback collision",
+                character.EntityId,
+                character.StaticInfo.CharacterTypeId);
+            return new AssetCompoundKey(info?.HitboxCollisionId ?? 0, Vector3.Zero, info?.Scale ?? 1f);
+        }
 
         var collisionId = info.PoseTypeRecord.StandingCollisionid;
         var offset = Vector3.Zero;

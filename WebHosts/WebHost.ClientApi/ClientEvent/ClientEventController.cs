@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -12,7 +12,8 @@ public class ClientEventController : ControllerBase
     [HttpPost]
     public object Post([FromBody] Models.ClientEvent payload)
     {
-        Log.Logger.Verbose(JsonSerializer.Serialize(payload));
+        Log.Logger.Information("client_event action={Action} event={Event} data={Data}",
+                               payload?.Action, payload?.Event, JsonSerializer.Serialize(payload));
         return new { };
     }
 }

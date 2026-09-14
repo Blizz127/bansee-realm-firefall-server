@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ using GameServer.StaticDB;
 using GameServer.StaticDB.Records.aptfs;
 using GameServer.StaticDB.Records.customdata;
 using GameServer.Systems.Aptitude;
+using GameServer.Test;
 using Serilog;
 using Timer = System.Threading.Timer;
 
@@ -358,22 +360,6 @@ public class EntityManager
     // TODO: Remove these in favor of using the files
     public void TempSpawnTestEntities()
     {
-        // New Eden Coral Forest
-        if (_shard.ZoneId == 448)
-        {
-            // Aero
-            var aero = SpawnCharacter(356, new Vector3(167.84642f, 262.20822f, 491.86758f));
-
-            // Battleframe Station
-            SpawnDeployable(395, new Vector3(170.84642f, 243.20822f, 491.71597f), new Quaternion(0f, 0f, 0.92874485f, 0.37071964f));
-
-            // Thumper
-            _shard.EncounterMan.CreateThumper(20, new Vector3(158.3f, 249.3f, 491.93f), aero, SDBInterface.GetResourceNodeBeaconCalldownCommandDef(766269));
-
-            // Datapad
-            SpawnCarryable(26, new Vector3(160.3f, 250.3f, 491.93f));
-        }
-
         // Checkerboard, Harvester/Crash Down
         if (_shard.ZoneId == 12 || _shard.ZoneId == 1003)
         {
@@ -403,12 +389,60 @@ public class EntityManager
 
     public void SpawnZoneEntities(uint zoneId)
     {
+        var zone = DataUtils.GetZone(zoneId);
+        _logger.Information(
+            "Zone {ZoneId} default outpost {OutpostId} spawn ({X:F2},{Y:F2},{Z:F2})",
+            zoneId,
+            zone.DefaultOutpostId,
+            zone.POIs["spawn"].X,
+            zone.POIs["spawn"].Y,
+            zone.POIs["spawn"].Z);
+
         // Deployable
+        var depCount = 0;
         foreach (var entry in CustomDBInterface.GetZoneDeployables(zoneId))
         {
             var deployable = entry.Value;
             SpawnDeployable(deployable.Type, deployable.Position, deployable.Orientation);
+            depCount++;
         }
+
+        _logger.Information("Zone {ZoneId} spawned {DepCount} CustomDB deployables", zoneId, depCount);
+
+        // NPCs
+        var npcCount = 0;
+        foreach (var entry in CustomDBInterface.GetZoneNpcs(zoneId))
+        {
+            var npc = entry.Value;
+            try
+            {
+                var entity = SpawnCharacter(npc.Type, npc.Position);
+                entity.SetOrientation(npc.Orientation);
+                if (!string.IsNullOrWhiteSpace(npc.DisplayName))
+                {
+                    var info = entity.StaticInfo;
+                    info.DisplayName = npc.DisplayName;
+
+                    // Packet nameplate: don't let SDB LocalizedNameId override empty/wrong titles.
+                    info.NameLocalizationId = 0;
+                    entity.SetStaticInfo(info);
+                }
+
+                entity.SetSpawnPose();
+                npcCount++;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(
+                    ex,
+                    "Failed to spawn CustomDB NPC {NpcId} type {TypeId} at {Position}",
+                    npc.Id,
+                    npc.Type,
+                    npc.Position);
+            }
+        }
+
+        _logger.Information("Zone {ZoneId} spawned {NpcCount} CustomDB NPCs", zoneId, npcCount);
 
         // Melding
         foreach (var entry in CustomDBInterface.GetZoneMeldings(zoneId))
@@ -433,7 +467,7 @@ public class EntityManager
             SpawnOutpost(outpost);
         }
 
-        // Testing
+        // Testing (non-Copa zones only; Copa plaza junk removed)
         TempSpawnTestEntities();
     }
 

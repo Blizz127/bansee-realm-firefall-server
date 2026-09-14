@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace WebHost.ClientApi.Characters.Models;
 
 public class Character
 {
+    // RIN uses long; keep values inside JS safe-integer range so the client list parser keeps them.
     public ulong CharacterGuid { get; set; }
     public string Name { get; set; }
     public string UniqueName { get; set; }
@@ -23,7 +24,8 @@ public class Character
     public DateTime LastSeenAt { get; set; }
     public Visuals Visuals { get; set; }
     public IEnumerable<Gear> Gear { get; set; }
-    public int ExpiresIn { get; set; }
+    public long ExpiresIn { get; set; }
+    public long? DeletedAt { get; set; }
     public string Race { get; set; }
     public IEnumerable<int> Migrations { get; set; }
 }

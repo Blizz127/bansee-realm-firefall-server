@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using WebHost.OperatorApi.Exceptions;
 
 namespace WebHost.OperatorApi.Capability;
@@ -7,19 +8,25 @@ public class CapabilityRepository : ICapabilityRepository
 {
     public async Task<HostInformation> GetHostInformationAsync(string environment, int build)
     {
+        var host = Environment.GetEnvironmentVariable("PIN_PUBLIC_HOST") ?? "100.72.127.15";
+
+        // HTTP everywhere for login reliability. Alienware FirefallClient.exe is patched
+        // to skip Oracle's "must be HTTPS" scheme check (see patch_pin_oracle.py).
+        string Http(int port) => $"http://{host}:{port}";
+
         return await Task.FromResult(new HostInformation
                                      {
-                                         FrontendHost = "https://localhost:44399",
-                                         StoreHost = "https://localhost:44399",
-                                         ChatServer = "https://localhost:44307",
-                                         ReplayHost = $"https://localhost:44399/{environment}-{build}",
-                                         WebHost = "https://localhost:44399",
-                                         MarketHost = "https://localhost:44399",
-                                         IngameHost = "https://localhost:44303",
-                                         ClientapiHost = "https://localhost:44302",
-                                         WebAssetHost = "https://localhost:44399",
-                                         WebAccountsHost = "https://localhost:44399",
-                                         RhsigscanHost = "https://localhost:44399"
+                                         FrontendHost = Http(4499),
+                                         StoreHost = Http(4499),
+                                         ChatServer = Http(4407),
+                                         ReplayHost = $"{Http(4499)}/{environment}-{build}",
+                                         WebHost = Http(4499),
+                                         MarketHost = Http(4499),
+                                         IngameHost = Http(4403),
+                                         ClientapiHost = Http(4402),
+                                         WebAssetHost = Http(4499),
+                                         WebAccountsHost = Http(4499),
+                                         RhsigscanHost = Http(4499)
                                      });
     }
 

@@ -14,9 +14,9 @@ public static class DataUtils
 
         AddZone(12, "Nothing", 1461290341326u, new Vector3(-9.92f, 0.53f, 0.0f));
         AddZone(162, "Diamond Head", 1461290341098u, new Vector3(-718.07f, 735.62f, 103.0f));
-        AddZone(448, "New Eden", 1461290346895u, new Vector3(176.65f, 250.13f, 491.94f), 17);
-        _zones[448].POIs.Add("watchtower", new Vector3(176.65f, 250.13f, 491.94f));
-        _zones[448].POIs.Add("jacuzzi", new Vector3(-532.0f, -469.0f, 473.0f));
+
+        // Retail first hub is Copacabana (outpost 23 / loc 135929), not Watchtower: Lagoa Rasa (17).
+        AddZone(448, "New Eden", 1461290346895u, new Vector3(-429.97443f, -383.73978f, 439.07806f), 23);
         AddZone(805, "Epicenter Melding Tornado Pocket", 1461290355101u, new Vector3(-112.39f, 60.02f, 536.0f));
         AddZone(844, "Omnidyne-M Prototype Stadium", 1461290362014u, new Vector3(-2.26f, -44.72f, 130.17f));
         AddZone(865, "Abyss - Melding Tornado Pocket", 1461290368902u, new Vector3(0.0f, 0.0f, 0.0f));

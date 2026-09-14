@@ -1,24 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Common.Characters;
 
 namespace WebHost.InGameApi.Controllers;
 
 [ApiController]
-public class CharactersData
+public class CharactersData : ControllerBase
 {
     [Route("character/data")]
     [Route("api/v1/character/data")]
     [HttpGet]
     [Produces("application/json")]
-    public static object Data()
+    public object Data([FromQuery] ulong? character_guid = null, [FromQuery] ulong? characterGuid = null)
     {
+        var created = ResolveCreated(character_guid ?? characterGuid);
         var data = new Data
                    {
-                       CharacterGuid = 0x99aabbccddee0000 + 448,
-                       Name = "Sleepwalker",
+                       CharacterGuid = created?.CharacterGuid ?? CreatedCharacterRecord.GuidForNewEden(),
+                       Name = created?.Name ?? "Freelancer",
                        Redbux = 1094,
                        Crystite = 4104594,
-                       Gender = 0,
-                       UniqueName = "SLEEPWALKER",
+                       Gender = (uint)(created?.GenderByte ?? 0),
+                       UniqueName = (created?.Name ?? "Freelancer").ToUpperInvariant(),
                        Race = 0
                    };
 
@@ -28,54 +30,58 @@ public class CharactersData
     [Route("api/v1/character_sheet.json")]
     [HttpGet]
     [Produces("application/json")]
-    public object CharacterSheet()
+    public object CharacterSheet([FromQuery] ulong? character_guid = null, [FromQuery] ulong? characterGuid = null)
     {
+        var created = ResolveCreated(character_guid ?? characterGuid);
+        var frameId = (uint)(created?.StartClassId ?? 75774);
+        var (name, webIcon) = CharCreateStarterGear.FrameLabel((int)frameId);
+
         var sheet = new CharacterSheet
                     {
                         Battleframe = new Battleframe
                                       {
-                                          ItemSdbId = 76332,
-                                          Name = "Astrek \"Rhino\"",
-                                          WebIcon = "Rhino",
+                                          ItemSdbId = frameId,
+                                          Name = name,
+                                          WebIcon = webIcon,
                                           Constraints = new Constraints
                                                         {
                                                             Mass = new MassPowerCpu
                                                                    {
                                                                        Level = new LevelValue
                                                                                {
-                                                                                   Total = 10, Current = 4
+                                                                                   Total = 10, Current = 1
                                                                                },
                                                                        Value = new LevelValue
                                                                                {
-                                                                                   Total = 1160, Current = 0
+                                                                                   Total = 1000, Current = 0
                                                                                }
                                                                    },
                                                             Power = new MassPowerCpu
                                                                     {
                                                                         Level = new LevelValue
                                                                                 {
-                                                                                    Total = 10, Current = 4
+                                                                                    Total = 10, Current = 1
                                                                                 },
                                                                         Value = new LevelValue
                                                                                 {
-                                                                                    Total = 580, Current = 0
+                                                                                    Total = 500, Current = 0
                                                                                 }
                                                                     },
                                                             Cpu = new MassPowerCpu
                                                                   {
                                                                       Level = new LevelValue
                                                                               {
-                                                                                  Total = 10, Current = 4
+                                                                                  Total = 10, Current = 1
                                                                               },
                                                                       Value = new LevelValue
                                                                               {
-                                                                                  Total = 12, Current = 0
+                                                                                  Total = 500, Current = 0
                                                                               }
                                                                   }
                                                         },
                                           Xp = new Xp
                                                {
-                                                   CurrentXp = 477962, LifetimeXp = 731962
+                                                   CurrentXp = 0, LifetimeXp = 0
                                                }
                                       }
                     };
@@ -86,57 +92,75 @@ public class CharactersData
     [Route("api/v1/character_sheet/equipped_items.json")]
     [HttpGet]
     [Produces("application/json")]
-    public object EquippedItems()
+    public object EquippedItems([FromQuery] ulong? character_guid = null, [FromQuery] ulong? characterGuid = null)
     {
+        var created = ResolveCreated(character_guid ?? characterGuid);
+        var frameId = created?.StartClassId ?? 75774;
+        uint Slot(int slotTypeId, uint fallback) =>
+            (uint)(CharCreateStarterGear.SdbIdForSlot(frameId, slotTypeId) ?? (int)fallback);
+
         var equipped = new Equipped
                        {
                            Primary = new Item
                                      {
-                                         ItemId = string.Empty, DefaultItemSdbId = 78324, IsUnlocked = true
+                                         ItemId = string.Empty, DefaultItemSdbId = Slot(1, 87056), IsUnlocked = true
                                      },
                            Secondary = new Item
                                        {
-                                           ItemId = string.Empty, DefaultItemSdbId = 78043, IsUnlocked = true
+                                           ItemId = string.Empty, DefaultItemSdbId = Slot(2, 87769), IsUnlocked = true
                                        },
                            Ability1 = new Item
                                       {
-                                          ItemId = string.Empty, DefaultItemSdbId = 78326, IsUnlocked = true
+                                          ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                       },
                            Ability2 = new Item
                                       {
-                                          ItemId = string.Empty, DefaultItemSdbId = 78328, IsUnlocked = true
+                                          ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                       },
                            Ability3 = new Item
                                       {
-                                          ItemId = string.Empty, DefaultItemSdbId = 78330, IsUnlocked = true
+                                          ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                       },
                            Hkm = new Item
                                  {
-                                     ItemId = "9186949129711219709", DefaultItemSdbId = 0, IsUnlocked = true
+                                     ItemId = string.Empty, DefaultItemSdbId = Slot(6, 89124), IsUnlocked = true
                                  },
                            Passive = new Item
                                      {
-                                         ItemId = "9190664271895347709", DefaultItemSdbId = 78334, IsUnlocked = true
+                                         ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                      },
                            Jumpjets = new Item
                                       {
-                                          ItemId = string.Empty, DefaultItemSdbId = 78070, IsUnlocked = true
+                                          ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                       },
                            Servos = new Item
                                     {
-                                        ItemId = string.Empty, DefaultItemSdbId = 78068, IsUnlocked = true
+                                        ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                     },
                            Backpack = new Item
                                       {
-                                          ItemId = string.Empty, DefaultItemSdbId = 76018, IsUnlocked = true
+                                          ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                       },
                            Plating = new Item
                                      {
-                                         ItemId = string.Empty, DefaultItemSdbId = 85203, IsUnlocked = true
+                                         ItemId = string.Empty, DefaultItemSdbId = 0, IsUnlocked = true
                                      }
                        };
 
         return equipped;
+    }
+
+    private static CreatedCharacterRecord ResolveCreated(ulong? guid)
+    {
+        var created = guid is > 0
+                          ? CreatedCharacterStore.GetByGuid(guid.Value)
+                          : CreatedCharacterStore.GetLatest();
+        if (created is { IsDeleted: true })
+        {
+            return null;
+        }
+
+        return created;
     }
 }
 

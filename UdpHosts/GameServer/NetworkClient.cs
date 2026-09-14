@@ -363,6 +363,26 @@ public class NetworkClient : INetworkClient
 
         foreach (var packet in _outgoingBatch)
         {
+            // A single sub-packet larger than the MTU budget cannot be copied into the
+            // preallocated datagram; send it as its own datagram instead of crashing.
+            if (packet.Length + _socketIdSize > _maxDatagramPayload)
+            {
+                if (currentSize > _socketIdSize)
+                {
+                    Sender.SendAsync(datagram[..currentSize], RemoteEndpoint);
+                    datagram = new Memory<byte>(new byte[_maxDatagramPayload]);
+                    socketIdBytes.CopyTo(datagram);
+                    currentSize = _socketIdSize;
+                }
+
+                Logger.Warning(
+                    "Outgoing sub-packet ({Length} bytes) exceeds MTU budget ({Budget}); sending unbatched",
+                    packet.Length,
+                    _maxDatagramPayload - _socketIdSize);
+                SendDatagram(packet);
+                continue;
+            }
+
             if (currentSize + packet.Length > _maxDatagramPayload)
             {
                 Sender.SendAsync(datagram[..currentSize], RemoteEndpoint);
@@ -376,7 +396,10 @@ public class NetworkClient : INetworkClient
             currentSize += packet.Length;
         }
 
-        Sender.SendAsync(datagram[..currentSize], RemoteEndpoint);
+        if (currentSize > _socketIdSize)
+        {
+            Sender.SendAsync(datagram[..currentSize], RemoteEndpoint);
+        }
 
         _outgoingBatch.Clear();
     }

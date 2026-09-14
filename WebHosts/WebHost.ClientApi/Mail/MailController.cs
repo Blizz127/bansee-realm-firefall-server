@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebHost.ClientApi.Mail.Models;
 
 namespace WebHost.ClientApi.Mail;
@@ -65,7 +65,15 @@ public class MailController : ControllerBase
 
     [Route("api/v2/characters/{characterId}/mail/{messageId}/claim_attachments")]
     [HttpGet]
-    public void GetMailAttachments()
+    [HttpPost]
+    public object ClaimMailAttachments(string characterId, ulong messageId)
     {
+        // Client POSTs this for Daily Login / Redeem All (Mailbox.lua PostClaimAttachments).
+        return new
+               {
+                   id = messageId,
+                   attachment_count = 0,
+                   attachments = new object[] { }
+               };
     }
 }

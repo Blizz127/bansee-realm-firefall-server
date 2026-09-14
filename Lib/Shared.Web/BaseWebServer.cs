@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Security.Authentication;
@@ -69,6 +69,14 @@ public abstract class BaseWebServer
                                                                                       {
                                                                                           options.JsonSerializerOptions
                                                                                                  .PropertyNamingPolicy = new SnakeCasePropertyNamingPolicy();
+                                                                                          options.JsonSerializerOptions
+                                                                                                 .NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+                                                                                          options.JsonSerializerOptions
+                                                                                                 .Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+
+                                                                                          // Whole-second ISO timestamps — Firefall's client JSON parser is picky about fractions.
+                                                                                          options.JsonSerializerOptions
+                                                                                                 .Converters.Add(new Shared.Common.WholeSecondDateTimeConverter());
                                                                                       });
                                        })
                     .UseSerilog();
@@ -117,8 +125,11 @@ public abstract class BaseWebServer
             _ = app.UseDeveloperExceptionPage();
         }
 
-        _ = app.UseHttpsRedirection()
-               .UseSerilogRequestLogging()
+        // Dual-bind HTTP+HTTPS is normal for PIN. Never redirect — the Firefall client
+        // needs https:// for Oracle, while tools/curl keep using the HTTP ports.
+        // UseHttpsRedirection without a mapped HTTPS port also spams
+        // "Failed to determine the https port for redirect".
+        _ = app.UseSerilogRequestLogging()
                .UseRouting()
                .UseEndpoints(endpoints => { _ = endpoints.MapControllers(); });
 

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Common.Characters;
 using WebHost.ClientApi.Accounts.Models;
 using WebHost.ClientApi.Characters.Models;
 
@@ -11,6 +12,10 @@ namespace WebHost.ClientApi.Accounts;
 public class AccountsController : ControllerBase
 {
     private static ConcurrentDictionary<uint, GarageSlots> _garageSlots;
+
+    // Client ZoneSelection builds one plate per character_limit. Advertising 40
+    // leaves a long row of empty "create" slots and scrolls the real character off-screen.
+    private const int MinCharacterSlots = 5;
 
     [Route("api/v2/accounts")]
     [HttpPost]
@@ -23,18 +28,23 @@ public class AccountsController : ControllerBase
     [HttpPost]
     public AccountStatus Login()
     {
+        var owned = CreatedCharacterStore.GetAll().Count;
+        var characterLimit = Math.Max(MinCharacterSlots, owned + 1);
+
+        // Any username/password (including blank) is accepted — PIN has no real accounts.
         return new AccountStatus
                {
-                   AccountId = 0x1122334455667788,
+                   AccountId = 1,
                    CanLogin = true,
                    IsDev = false,
                    SteamAuthPrompt = false,
                    SkipPrecursor = false,
                    CaisStatus = new CaisStatus { Duration = 0, ExpiresAt = 0, State = "disabled" },
-                   CharacterLimit = 40,
+                   CharacterLimit = characterLimit,
                    IsVip = true,
                    VipExpiration = 0,
-                   CreatedAt = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()
+                   // Fixed past timestamp — "now" can confuse client clock/timesync checks.
+                   CreatedAt = new DateTimeOffset(2017, 1, 3, 0, 0, 0, TimeSpan.Zero).ToUnixTimeSeconds()
                };
     }
 
@@ -56,18 +66,8 @@ public class AccountsController : ControllerBase
     [HttpGet]
     public object CharacterSlots()
     {
-        return new List<Gear>
-               {
-                   new() { SlotTypeId = 1, SdbId = 86969, ItemGuid = 5068916056568384765 },
-                   new() { SlotTypeId = 2, SdbId = 87918, ItemGuid = 5068916056568385021 },
-                   new() { SlotTypeId = 6, SdbId = 91770, ItemGuid = 5068923373180718589 },
-                   new() { SlotTypeId = 116, SdbId = 126000, ItemGuid = 5068916056568385277 },
-                   new() { SlotTypeId = 122, SdbId = 129359, ItemGuid = 5068916056568385533 },
-                   new() { SlotTypeId = 126, SdbId = 127501, ItemGuid = 5068916056568385789 },
-                   new() { SlotTypeId = 127, SdbId = 128271, ItemGuid = 5068916056568386045 },
-                   new() { SlotTypeId = 128, SdbId = 126731, ItemGuid = 5068916056568386301 },
-                   new() { SlotTypeId = 129, SdbId = 129067, ItemGuid = 5068916056568386557 }
-               };
+        // Empty = no locked purchasable slots; client should not show unlock UI.
+        return Array.Empty<object>();
     }
 
     [Route("api/v3/characters/{characterId}/titles")]
